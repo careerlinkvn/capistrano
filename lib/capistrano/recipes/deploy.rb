@@ -216,7 +216,7 @@ namespace :deploy do
   DESC
   task :setup, :except => { :no_release => true } do
     dirs = [deploy_to, releases_path, shared_path]
-    dirs += shared_children.map { |d| File.join(shared_path, d.split('/').last) }
+    dirs += shared_children.map { |d| File.join(shared_path, d) }
     run "#{try_sudo} mkdir -p #{dirs.join(' ')}"
     run "#{try_sudo} chmod g+w #{dirs.join(' ')}" if fetch(:group_writable, true)
   end
@@ -285,7 +285,7 @@ namespace :deploy do
       else
         commands << "rm -rf -- #{escaped_release}/#{d}"
       end
-      commands << "ln -s -- #{shared_path}/#{dir.split('/').last.shellescape} #{escaped_release}/#{d}"
+      commands << "ln -s -- #{shared_path}/#{d} #{escaped_release}/#{d}"
     end
 
     run commands.join(' && ') if commands.any?
